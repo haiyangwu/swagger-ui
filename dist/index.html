@@ -30,13 +30,15 @@
   <!-- <script src='lang/ru.js' type='text/javascript'></script> -->
   <!-- <script src='lang/en.js' type='text/javascript'></script> -->
 
+  <script src='lib/jbase64.js' type='text/javascript'></script>
   <script type="text/javascript">
     $(function () {
       var url = window.location.search.match(/url=([^&]+)/);
       if (url && url.length > 1) {
         url = decodeURIComponent(url[1]);
       } else {
-        url = "http://petstore.swagger.io/v2/swagger.json";
+        // url = "http://petstore.swagger.io/v2/swagger.json";
+        url = "http://222.186.61.205:8080/watch-rest/api-docs";
       }
 
       hljs.configure({
@@ -76,6 +78,19 @@
         showRequestHeaders: false
       });
 
+      function addApiKeyAuthorization() {
+        var key = $('#input_apiKey')[0].value;
+        log("key: " + key);
+        var xToken = BASE64.encoder("Lianxi;1.0;" +key + ";Test;HTC;LT;2G;8");
+        log("X-Token: " + xToken);
+        swaggerUi.api.clientAuthorizations.add("api_key", new SwaggerClient.ApiKeyAuthorization("X-Token", xToken, "header"));
+      }
+
+      $('#input_apiKey').change(function() {
+        addApiKeyAuthorization();
+      });
+
+      // if you have an apiKey you would like to pre-populate on the page for demonstration purposes...
       window.swaggerUi.load();
 
       function log() {
@@ -93,7 +108,13 @@
     <a id="logo" href="http://swagger.io"><img class="logo__img" alt="swagger" height="30" width="30" src="images/logo_small.png" /><span class="logo__title">swagger</span></a>
     <form id='api_selector'>
       <div class='input'><input placeholder="http://example.com/api" id="input_baseUrl" name="baseUrl" type="text"/></div>
-      <div id='auth_container'></div>
+      <!-- <div id='auth_container'>
+        <input placeholder="用户名" id="input_apiKey" name="token" type="text" value="">
+        <input placeholder="密码" id="input_apiKey" name="token" type="text" value="">
+      </div> -->
+      <div class='input'>
+          <input placeholder="X-Token" id="input_apiKey" name="token" type="text" value="">
+      </div>
       <div class='input'><a id="explore" class="header__btn" href="#" data-sw-translate>Explore</a></div>
     </form>
   </div>
